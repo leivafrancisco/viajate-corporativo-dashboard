@@ -13,7 +13,7 @@ export const DashboardLayout = () => {
         <Box component="main" sx={{ mt: 8, p: 3 }}>
           <Outlet />
         </Box>
-      </Box>
+      </Box>  
     </Box>
   );
 };
