@@ -20,7 +20,7 @@ const AppLayout = () => {
         </Container>
       </AppBar>
 
-      <Container sx={{ flexGrow: 1, mt: 2 }}>
+      <Container sx={{ flexGrow: 1, mt: 4 }}>
         <Outlet />
       </Container>
 
