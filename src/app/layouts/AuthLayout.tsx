@@ -12,7 +12,6 @@ export default function AuthLayout() {
         alignItems: "center",
         justifyContent: "center",
         gap: 4, 
-        backgroundColor: "#0D47A1",
       }}
     >
       <Logo /> 

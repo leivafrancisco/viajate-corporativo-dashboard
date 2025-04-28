@@ -1,16 +1,17 @@
 import * as React from "react";
-import { AppProvider, Navigation, Router } from "@toolpad/core/AppProvider";
+import { AppProvider, Navigation, Router, type Session } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { PageContainer } from "@toolpad/core/PageContainer";
-import { Box, Stack, Typography, Tooltip, Chip } from "@mui/material";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
+
 import Logo from "@/presentation/theme/components/Logo";
 import HomeIcon from "@mui/icons-material/Home";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import GroupsIcon from "@mui/icons-material/Groups";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import theme from "@/theme";
+
+import CustomAppTitle from "@/presentation/layout/components/CustomAppTitle";
+import SidebarFooterAccount from "@/presentation/layout/components/SidebarFooterAccount";
+
 
 const NAVIGATION: Navigation = [
   {
@@ -34,18 +35,16 @@ const NAVIGATION: Navigation = [
       {
         segment: "mostrar",
         title: "Mostrar",
-        icon: <VisibilityIcon />,
       },
       {
         segment: "crear",
         title: "Crear",
-        icon: <AddCircleIcon />,
       },
     ],
   },
 ];
 
-// Hook para la navegación con React Router
+// Hook para navegación
 function useCustomRouter(): Router {
   const navigate = useNavigate();
   const location = useLocation();
@@ -62,36 +61,33 @@ function useCustomRouter(): Router {
   );
 }
 
-
-// Componente de título (con logo, nombre de app y check de producción)
-function CustomAppTitle() {
-  return (
-    <Stack direction="row" alignItems="center" spacing={2} >
-      <Typography variant="h6" noWrap>
-        Viajate Corporativo
-      </Typography>
-     
-      <Tooltip title="Cuenta verificada">
-        <CheckCircleIcon color="success" fontSize="small" />
-      </Tooltip>
-    </Stack>
-  );
-}
-
-// Footer lateral del sidebar
-function SidebarFooter({ mini }: { mini: boolean }) {
-  return (
-    <Typography
-      variant="caption"
-      sx={{ m: 1, whiteSpace: "nowrap", overflow: "hidden" }}
-    >
-      {mini ? "© Viajate" : `© ${new Date().getFullYear()} - Viajate`}
-    </Typography>
-  );
-}
-
 export default function AppLayout() {
   const router = useCustomRouter();
+
+  const [session, setSession] = React.useState<Session | null>({
+    user: {
+      name: "Francisco Emanuel",
+      email: "francisco@viajate.com",
+      image: "https://ui-avatars.com/api/?name=Francisco+Emanuel",
+    },
+  });
+
+  const authentication = React.useMemo(() => {
+    return {
+      signIn: () => {
+        setSession({
+          user: {
+            name: "Francisco Emanuel",
+            email: "francisco@viajate.com",
+            image: "https://ui-avatars.com/api/?name=Francisco+Emanuel",
+          },
+        });
+      },
+      signOut: () => {
+        setSession(null);
+      },
+    };
+  }, []);
 
   return (
     <AppProvider
@@ -103,11 +99,14 @@ export default function AppLayout() {
         logo: <Logo />,
         homeUrl: "/",
       }}
+      session={session}
+      authentication={authentication}
     >
       <DashboardLayout
         slots={{
           appTitle: CustomAppTitle,
-          sidebarFooter: SidebarFooter,
+          sidebarFooter: SidebarFooterAccount,
+          toolbarAccount: () => null, 
         }}
         sx={{
           "& .MuiBreadcrumbs-root": {
@@ -118,8 +117,6 @@ export default function AppLayout() {
         <PageContainer>
           <Outlet />
         </PageContainer>
-
-      
       </DashboardLayout>
     </AppProvider>
   );
