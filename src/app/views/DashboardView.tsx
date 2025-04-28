@@ -12,9 +12,6 @@ export default function DashboardView() {
         gap: 2,
       }}
     >
-      <Typography variant="h4" component="h1">
-        Mis comunidades
-      </Typography>
 
       <Typography variant="body1" color="text.secondary">
         Aquí podrás gestionar tus comunidades, miembros y mucho más.
