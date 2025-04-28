@@ -1,5 +1,6 @@
-import { Box, Grid, Typography, Card, CardContent } from "@mui/material";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { Box, Typography, Card, CardContent } from "@mui/material";
+import Grid from "@mui/material/Grid";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 
 const dataViajes = [
   { mes: "Ene", viajes: 20 },
@@ -9,6 +10,14 @@ const dataViajes = [
   { mes: "May", viajes: 70 },
   { mes: "Jun", viajes: 60 },
 ];
+
+const dataVehiculos = [
+  { tipo: "Auto", cantidad: 65 },
+  { tipo: "Moto", cantidad: 25 },
+  { tipo: "Camioneta", cantidad: 12 },
+];
+
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
 
 export default function DashboardInicioComunidad() {
   return (
@@ -88,6 +97,32 @@ export default function DashboardInicioComunidad() {
             <Tooltip />
             <Line type="monotone" dataKey="viajes" stroke="#1976d2" strokeWidth={3} />
           </LineChart>
+        </ResponsiveContainer>
+      </Box>
+
+      {/* Gráfico de tipos de vehículos */}
+      <Box mt={5}>
+        <Typography variant="h5" gutterBottom>
+          Tipos de vehículos registrados
+        </Typography>
+        <ResponsiveContainer width="100%" height={300}>
+          <PieChart>
+            <Pie
+              data={dataVehiculos}
+              dataKey="cantidad"
+              nameKey="tipo"
+              cx="50%"
+              cy="50%"
+              outerRadius={100}
+              label
+            >
+              {dataVehiculos.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip />
+            <Legend />
+          </PieChart>
         </ResponsiveContainer>
       </Box>
     </Box>
