@@ -1,7 +1,7 @@
 import { Box, Typography, Link as MuiLink } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom"; // Importamos Link de react-router-dom
 
-export default function DashboardView() {
+export default function HomeView() {
   return (
     <Box
       sx={{

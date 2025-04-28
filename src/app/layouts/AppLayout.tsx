@@ -1,5 +1,4 @@
 import * as React from "react";
-import { createTheme } from "@mui/material/styles";
 import { AppProvider, Navigation, Router } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { PageContainer } from "@toolpad/core/PageContainer";
@@ -10,6 +9,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import GroupsIcon from "@mui/icons-material/Groups";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import theme from "@/theme";
 
 const NAVIGATION: Navigation = [
   {
@@ -44,22 +44,6 @@ const NAVIGATION: Navigation = [
   },
 ];
 
-const viajateTheme = createTheme({
-  colorSchemes: { light: true, dark: true },
-  cssVariables: {
-    colorSchemeSelector: "class",
-  },
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 600,
-      md: 900,
-      lg: 1200,
-      xl: 1536,
-    },
-  },
-});
-
 // Hook para conectar tu navegador real
 function useCustomRouter(): Router {
   const navigate = useNavigate();
@@ -84,9 +68,9 @@ export default function AppLayout() {
     <AppProvider
       navigation={NAVIGATION}
       router={router}
-      theme={viajateTheme}
+      theme={theme}
       branding={{
-        title: "Viajate",
+        title: "",
         logo: <Logo />,
       }}
     >

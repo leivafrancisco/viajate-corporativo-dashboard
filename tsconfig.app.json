@@ -8,9 +8,10 @@
     "skipLibCheck": true,
     "baseUrl": "src",
     "paths": {
+      "@/*": ["*"],
       "@/app/*": ["app/*"],
       "@/core/*": ["core/*"],
-      "@/presentation/*": ["presentation/*"],
+      "@/presentation/*": ["presentation/*"]
     },
 
     /* Bundler mode */

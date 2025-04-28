@@ -1,7 +1,7 @@
 export default function Logo() {
   return (
     <img
-      src="/logo.png"
+      src="/logo-light.png"
       alt="Logo de Viajate"
       style={{
         height: "60px",
