@@ -74,7 +74,6 @@ function CustomAppTitle() {
       <Tooltip title="Cuenta verificada">
         <CheckCircleIcon color="success" fontSize="small" />
       </Tooltip>
-      <Chip size="small" label="ADMIN" color="info" />
     </Stack>
   );
 }
