@@ -5,7 +5,9 @@ import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ConfirmDialog from "@/presentation/alert/components/ConfirmDialog";
 
 // Datos de ejemplo
 const comunidades = [
@@ -28,16 +30,31 @@ const comunidades = [
 export default function ShowCommunityView() {
   const navigate = useNavigate();
 
-  // Funciones de acciones
+  // Estados para el modal
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [selectedRow, setSelectedRow] = useState<any>(null);
+
   const handleEdit = (row: any) => {
     navigate(`/comunidad/editar/${row.id}`);
   };
 
   const handleDelete = (row: any) => {
-    console.log("Eliminar comunidad:", row);
+    setSelectedRow(row); // Guardamos el que quiere eliminar
+    setOpenDeleteModal(true); // Abrimos el modal
   };
 
-  // Columnas
+  const confirmDelete = () => {
+    console.log("Eliminando comunidad:", selectedRow);
+    setOpenDeleteModal(false);
+    setSelectedRow(null);
+    // Aquí iría la lógica real para eliminar (por ejemplo, llamar a un API)
+  };
+
+  const cancelDelete = () => {
+    setOpenDeleteModal(false);
+    setSelectedRow(null);
+  };
+
   const columns: GridColDef<(typeof comunidades)[number]>[] = [
     {
       field: "imagenUrl",
@@ -111,6 +128,21 @@ export default function ShowCommunityView() {
         }}
         pageSizeOptions={[5, 10]}
         disableRowSelectionOnClick
+      />
+
+      {/* Modal de confirmación de eliminación */}
+      <ConfirmDialog
+        open={openDeleteModal}
+        title="Confirmar eliminación"
+        description={
+          selectedRow
+            ? `¿Seguro que deseas eliminar ${selectedRow.nombre}?`
+            : ""
+        }
+        onConfirm={confirmDelete}
+        onCancel={cancelDelete}
+        confirmText="Eliminar"
+        cancelText="Cancelar"
       />
     </Box>
   );

@@ -4,7 +4,7 @@ export default function Logo() {
       src="/logo-light.png"
       alt="Logo de Viajate"
       style={{
-        height: "60px",
+        height: "50px",
         width: "auto", 
       }}
     />
