@@ -1,4 +1,4 @@
-export interface AuthDBResponse {
+export interface AuthDBResponse{
     data:    Data;
     message: string;
     status:  boolean;

@@ -1,5 +1,5 @@
 import { MappedUser } from "../interface/auth.interface";
-import { AuthDBResponse } from "../interface/AuthDBResponse.interface";
+import { AuthDBResponse } from "../interface/authDBResponse.interface";
 
 export const mapUserResponse = (response: AuthDBResponse): MappedUser => {
   const { usuario, token, refresh_token } = response.data;

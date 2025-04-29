@@ -1,7 +1,7 @@
 import { viajateCorporationApi } from "@/core/api/viajateCorporationApi";
 import axios from "axios";
 import { mapUserResponse } from "../mapper/auth.mapper";
-import { AuthDBResponse } from "../interface/AuthDBResponse.interface";
+import { AuthDBResponse } from "../interface/authDBResponse.interface";
 
 export const loginUser = async (email: string, password: string) => {
   try {

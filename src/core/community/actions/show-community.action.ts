@@ -10,6 +10,8 @@ export const getCommunities = async (): Promise<Community[]> => {
       "/comunidad/comunidades"
     );
 
+    console.log(data)
+
     return mapCommunity(data);
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {

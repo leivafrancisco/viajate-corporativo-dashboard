@@ -19,7 +19,7 @@ export default function ShowCommunityView() {
   const { communitiesQuery } = useCommunity();
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const [selectedRow, setSelectedRow] = useState<Community | null>(null); // <-- Tipo correcto
+  const [selectedRow, setSelectedRow] = useState<Community | null>(null);
 
   const handleEdit = (row: Community) => {
     navigate(`/comunidad/editar/${row.id}`);
@@ -98,21 +98,39 @@ export default function ShowCommunityView() {
   ];
 
   if (communitiesQuery.isLoading) {
-    return <Typography>Cargando comunidades...</Typography>;
+    return (
+      <Box sx={{ p: 4, textAlign: "center" }}>
+        <Typography variant="h6">Cargando comunidades...</Typography>
+      </Box>
+    );
   }
 
   if (communitiesQuery.isError) {
     return (
-      <Typography color="error">
-        Error al cargar comunidades: {communitiesQuery.error.message}
-      </Typography>
+      <Box sx={{ p: 4, textAlign: "center" }}>
+        <Typography variant="h6" color="error">
+          Error al cargar las comunidades: {communitiesQuery.error.message}
+        </Typography>
+      </Box>
     );
   }
 
   return (
-    <Box>
+    <Box sx={{ p: 2 }}>
+      {/* Mensaje si no hay comunidades */}
+      {communitiesQuery.data && communitiesQuery.data.length === 0 && (
+        <Typography
+          variant="h6"
+          align="center"
+          sx={{ mt: 2, mb: 2 }}
+        >
+          No hay comunidades disponibles.
+        </Typography>
+      )}
+
+      {/* Tabla siempre visible */}
       <DataGrid
-        rows={communitiesQuery.data || []}
+        rows={communitiesQuery.data ?? []} // <- corregido
         columns={columns}
         getRowId={(row) => row.id}
         initialState={{
@@ -122,6 +140,7 @@ export default function ShowCommunityView() {
         }}
         pageSizeOptions={[5, 10]}
         disableRowSelectionOnClick
+        autoHeight
       />
 
       {/* Modal de confirmación de eliminación */}
