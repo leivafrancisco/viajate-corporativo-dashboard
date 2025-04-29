@@ -1,22 +1,9 @@
-import { parseExpiresIn } from "../utils/parseExpiresIn";
-
-type ExpirationOptions = {
-  expiresIn?: string; // ej: "1h", "30m", "2d"
-};
+import { toast } from "sonner";
 
 export class SecureStorageAdapter {
-  static async setItem(
-    key: string,
-    value: string,
-    options?: ExpirationOptions
-  ) {
+  static async setItem(key: string, value: string) {
     try {
-      const item = {
-        value,
-        expiresAt: options?.expiresIn
-          ? Date.now() + parseExpiresIn(options.expiresIn)
-          : null,
-      };
+      const item = { value };
       localStorage.setItem(key, JSON.stringify(item));
     } catch (error) {
       window.alert("Error en guardar los datos: " + error);
@@ -29,13 +16,27 @@ export class SecureStorageAdapter {
       if (!raw) return null;
 
       const item = JSON.parse(raw);
+      const token = item.value;
 
-      if (item.expiresAt && Date.now() > item.expiresAt) {
-        localStorage.removeItem(key);
-        return null;
+      // ✅ Si parece un JWT, validamos el campo "exp"
+      if (typeof token === "string" && token.split(".").length === 3) {
+        const [, payloadBase64] = token.split(".");
+        const payloadJson = atob(payloadBase64);
+        const payload = JSON.parse(payloadJson);
+
+        if (payload.exp) {
+          const expMillis = payload.exp * 1000;
+          if (Date.now() >= expMillis) {
+            localStorage.removeItem(key);
+            toast.error(
+              "Tu sesión ha expirado. Por favor, iniciá sesión nuevamente."
+            );
+            return null;
+          }
+        }
       }
 
-      return item.value;
+      return token;
     } catch (error) {
       window.alert("Error en obtener los datos: " + error);
       return null;

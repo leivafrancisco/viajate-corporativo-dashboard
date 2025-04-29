@@ -21,7 +21,7 @@ export const getCommunities = async (): Promise<Community[]> => {
     throw new Error(
       error instanceof Error
         ? error.message
-        : "Error desconocido al traer las comunidades"
+        : "Error desconocido al cargar comunidades"
     );
   }
 };
