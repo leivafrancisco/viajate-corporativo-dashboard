@@ -18,6 +18,8 @@ export default function Router() {
           <Route path="/comunidad/crear" element={<CreateCommunityView />} />
           <Route path="/comunidad/mostrar" element={<ShowCommunityView />} />
           <Route path="/comunidad/editar/:id" element={<EditCommunityView />} />
+          <Route path="/comunidad/miembros/:id" element={<EditCommunityView />} />
+
         </Route>
 
         {/* Rutas dentro del AuthLayout */}

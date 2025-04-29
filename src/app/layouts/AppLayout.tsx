@@ -42,6 +42,24 @@ const NAVIGATION: Navigation = [
       },
     ],
   },
+  {
+    segment: "miembros",
+    title: "Miembros",
+    children: [
+      {
+        segment: "unne",
+        title: "UNNE",
+      },
+      {
+        segment: "Devlight",
+        title: "Devlight",
+      },
+      {
+        segment: "comunidad-3",
+        title: "Comunidad Viajate+",
+      },
+    ],
+  },
 ];
 
 // Hook para navegación
