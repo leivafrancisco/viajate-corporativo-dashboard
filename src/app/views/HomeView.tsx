@@ -1,24 +1,18 @@
-import { Box, Typography, Card, CardContent } from "@mui/material";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Legend,
-} from "recharts";
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  Alert,
+  CircularProgress,
+} from "@mui/material";
 
 import { useAuthStore } from "@/presentation/auth/store/useAuthStore";
-
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
+import { useCommunity } from "@/presentation/community/hook/useCommunity";
 
 export default function DashboardInicioComunidad() {
   const { user } = useAuthStore();
+  const { communitiesQuery } = useCommunity();
 
   if (!user) {
     return (
@@ -28,26 +22,51 @@ export default function DashboardInicioComunidad() {
     );
   }
 
-  // Simulamos datos para los gráficos, basados en el usuario
-  const dataViajes = [
-    { mes: "Ene", viajes: Math.floor(Math.random() * 20) + 10 },
-    { mes: "Feb", viajes: Math.floor(Math.random() * 30) + 20 },
-    { mes: "Mar", viajes: Math.floor(Math.random() * 40) + 30 },
-    { mes: "Abr", viajes: Math.floor(Math.random() * 50) + 40 },
-    { mes: "May", viajes: Math.floor(Math.random() * 60) + 50 },
-    { mes: "Jun", viajes: Math.floor(Math.random() * 70) + 60 },
-  ];
+  if (communitiesQuery.isLoading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 2,
+          minHeight: "60vh",
+        }}
+      >
+        <CircularProgress />
+        <Typography variant="h6">Cargando...</Typography>
+      </Box>
+    );
+  }
 
-  const dataVehiculos = [
-    { tipo: "Auto", cantidad: user.total_conductor || 0 },
-    { tipo: "Moto", cantidad: Math.floor(user.total_conductor / 3) || 0 },
-    { tipo: "Camioneta", cantidad: Math.floor(user.total_conductor / 4) || 0 },
-  ];
+  if (communitiesQuery.isError) {
+    return (
+      <Box
+        sx={{
+          minHeight: "60vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          p: 2,
+        }}
+      >
+        <Alert severity="error">
+          Error al cargar las comunidades:{" "}
+          {communitiesQuery.error instanceof Error
+            ? communitiesQuery.error.message
+            : "Error desconocido"}
+        </Alert>
+      </Box>
+    );
+  }
+
+  const communities = communitiesQuery.data || [];
 
   return (
-    <Box >
-      <Typography variant="h3" gutterBottom>
-        Bienvenido, {user.nombre} 
+    <Box>
+      <Typography variant="h4" gutterBottom>
+        Bienvenido, {user.nombre}
       </Typography>
 
       {/* Tarjetas */}
@@ -131,57 +150,61 @@ export default function DashboardInicioComunidad() {
         </Box>
       </Box>
 
-      {/* Gráfico de viajes */}
-      <Box mt={5}>
-        <Typography variant="h5" gutterBottom>
-          Viajes creados por mes
-        </Typography>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart
-            data={dataViajes}
-            margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="mes" />
-            <YAxis />
-            <Tooltip />
-            <Line
-              type="monotone"
-              dataKey="viajes"
-              stroke="#1976d2"
-              strokeWidth={3}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </Box>
+      <Typography variant="h4" gutterBottom sx={{ mt: 4 }}>
+        Comunidades Registradas
+      </Typography>
 
-      {/* Gráfico de tipos de vehículos */}
-      <Box mt={5}>
-        <Typography variant="h5" gutterBottom>
-          Tipos de vehículos registrados
-        </Typography>
-        <ResponsiveContainer width="100%" height={300}>
-          <PieChart>
-            <Pie
-              data={dataVehiculos}
-              dataKey="cantidad"
-              nameKey="tipo"
-              cx="50%"
-              cy="50%"
-              outerRadius={100}
-              label
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 3,
+          mt: 2,
+        }}
+      >
+        {communities.map((community) => (
+          <Box
+            key={community.id}
+            sx={{
+              flex: "1 1 calc(25% - 24px)", // Igual que las tarjetas de arriba
+              minWidth: 250,
+              maxWidth: 300,
+            }}
+          >
+            <Card
+              sx={{ height: "100%", display: "flex", flexDirection: "column" }}
             >
-              {dataVehiculos.map((_, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
+              {community.foto_perfil && (
+                <Box
+                  component="img"
+                  src={community.foto_perfil}
+                  alt={community.nombre}
+                  sx={{
+                    width: "100%",
+                    height: 140,
+                    objectFit: "cover",
+                    borderTopLeftRadius: 8,
+                    borderTopRightRadius: 8,
+                  }}
                 />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
+              )}
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography variant="h6" component="div" gutterBottom>
+                  {community.nombre}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  {community.descripcion}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  color={community.habilitada ? "success.main" : "error.main"}
+                >
+                  {community.habilitada ? "Habilitada" : "No habilitada"}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Box>
+        ))}
       </Box>
     </Box>
   );

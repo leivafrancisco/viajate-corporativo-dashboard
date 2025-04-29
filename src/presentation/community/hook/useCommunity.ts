@@ -17,11 +17,9 @@ export const useCommunity = () => {
       queryClient.invalidateQueries({
         queryKey: ["community"],
       });
-
-     
     },
     onError: (error: Error) => {
-     
+      throw error;
     },
   });
 
