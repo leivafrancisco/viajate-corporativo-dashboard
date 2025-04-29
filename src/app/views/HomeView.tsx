@@ -13,31 +13,44 @@ import {
   Legend,
 } from "recharts";
 
-const dataViajes = [
-  { mes: "Ene", viajes: 20 },
-  { mes: "Feb", viajes: 35 },
-  { mes: "Mar", viajes: 50 },
-  { mes: "Abr", viajes: 40 },
-  { mes: "May", viajes: 70 },
-  { mes: "Jun", viajes: 60 },
-];
-
-const dataVehiculos = [
-  { tipo: "Auto", cantidad: 65 },
-  { tipo: "Moto", cantidad: 25 },
-  { tipo: "Camioneta", cantidad: 12 },
-];
+import { useAuthStore } from "@/presentation/auth/store/useAuthStore";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
 
 export default function DashboardInicioComunidad() {
+  const { user } = useAuthStore();
+
+  if (!user) {
+    return (
+      <Box sx={{ p: 4 }}>
+        <Typography variant="h6">No existe el usuario...</Typography>
+      </Box>
+    );
+  }
+
+  // Simulamos datos para los gráficos, basados en el usuario
+  const dataViajes = [
+    { mes: "Ene", viajes: Math.floor(Math.random() * 20) + 10 },
+    { mes: "Feb", viajes: Math.floor(Math.random() * 30) + 20 },
+    { mes: "Mar", viajes: Math.floor(Math.random() * 40) + 30 },
+    { mes: "Abr", viajes: Math.floor(Math.random() * 50) + 40 },
+    { mes: "May", viajes: Math.floor(Math.random() * 60) + 50 },
+    { mes: "Jun", viajes: Math.floor(Math.random() * 70) + 60 },
+  ];
+
+  const dataVehiculos = [
+    { tipo: "Auto", cantidad: user.total_conductor || 0 },
+    { tipo: "Moto", cantidad: Math.floor(user.total_conductor / 3) || 0 },
+    { tipo: "Camioneta", cantidad: Math.floor(user.total_conductor / 4) || 0 },
+  ];
+
   return (
-    <Box sx={{ p: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        Bienvenido, Administrador de Comunidad UNNE 🚀
+    <Box >
+      <Typography variant="h3" gutterBottom>
+        Bienvenido, {user.nombre} 
       </Typography>
 
-      {/* Contenedor de tarjetas, usando flex */}
+      {/* Tarjetas */}
       <Box
         sx={{
           display: "flex",
@@ -46,7 +59,7 @@ export default function DashboardInicioComunidad() {
           mt: 2,
         }}
       >
-        {/* Tarjetas */}
+        {/* Usuarios registrados */}
         <Box sx={{ flex: "1 1 calc(25% - 24px)", minWidth: 200 }}>
           <Card>
             <CardContent>
@@ -57,11 +70,14 @@ export default function DashboardInicioComunidad() {
               >
                 Usuarios registrados
               </Typography>
-              <Typography variant="h5">328</Typography>
+              <Typography variant="h5">
+                {user.total_pasajero + user.total_conductor}
+              </Typography>
             </CardContent>
           </Card>
         </Box>
 
+        {/* Vehículos registrados */}
         <Box sx={{ flex: "1 1 calc(25% - 24px)", minWidth: 200 }}>
           <Card>
             <CardContent>
@@ -72,11 +88,12 @@ export default function DashboardInicioComunidad() {
               >
                 Vehículos registrados
               </Typography>
-              <Typography variant="h5">102</Typography>
+              <Typography variant="h5">{user.total_conductor}</Typography>
             </CardContent>
           </Card>
         </Box>
 
+        {/* Viajes creados */}
         <Box sx={{ flex: "1 1 calc(25% - 24px)", minWidth: 200 }}>
           <Card>
             <CardContent>
@@ -87,11 +104,14 @@ export default function DashboardInicioComunidad() {
               >
                 Viajes creados
               </Typography>
-              <Typography variant="h5">212</Typography>
+              <Typography variant="h5">
+                {user.total_pasajero} {/* A falta de un campo mejor */}
+              </Typography>
             </CardContent>
           </Card>
         </Box>
 
+        {/* Distancia total recorrida */}
         <Box sx={{ flex: "1 1 calc(25% - 24px)", minWidth: 200 }}>
           <Card>
             <CardContent>
@@ -102,22 +122,10 @@ export default function DashboardInicioComunidad() {
               >
                 Distancia total recorrida
               </Typography>
-              <Typography variant="h5">14.350 km</Typography>
-            </CardContent>
-          </Card>
-        </Box>
-
-        <Box sx={{ flex: "1 1 calc(25% - 24px)", minWidth: 200 }}>
-          <Card>
-            <CardContent>
-              <Typography
-                variant="subtitle1"
-                color="textSecondary"
-                gutterBottom
-              >
-                CO₂ evitado
+              <Typography variant="h5">
+                {Math.floor((user.total_pasajero + user.total_conductor) * 15)}{" "}
+                km
               </Typography>
-              <Typography variant="h5">2.430 kg</Typography>
             </CardContent>
           </Card>
         </Box>
@@ -147,7 +155,7 @@ export default function DashboardInicioComunidad() {
         </ResponsiveContainer>
       </Box>
 
-      {/* Gráfico de vehículos */}
+      {/* Gráfico de tipos de vehículos */}
       <Box mt={5}>
         <Typography variant="h5" gutterBottom>
           Tipos de vehículos registrados
