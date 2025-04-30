@@ -6,9 +6,9 @@ import {
   Alert,
   CircularProgress,
 } from "@mui/material";
+import { useCommunity } from "@/presentation/community/hooks/useCommunity";
 
 import { useAuthStore } from "@/presentation/auth/store/useAuthStore";
-import { useCommunity } from "@/presentation/community/hook/useCommunity";
 
 export default function DashboardInicioComunidad() {
   const { user } = useAuthStore();
@@ -209,3 +209,5 @@ export default function DashboardInicioComunidad() {
     </Box>
   );
 }
+
+

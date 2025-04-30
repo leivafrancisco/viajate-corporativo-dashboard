@@ -1,39 +1,27 @@
-import axios from "axios";
-import { viajateCorporationApi } from "@/core/api/viajateCorporationApi";
+// src/core/community/actions/create-community.actions.ts
 
-interface CommunmityData {
-  nombre: string;
-  descripcion: string;
-}
+import { CommunityPostRequest } from "../interface/community.interface";
+import { viajateCorporationApi } from "@/core/api/viajateCorporationApi"; // ajustá la ruta si es necesario
 
-interface CommunityDBResponse {
-  message: string;
-  status: boolean;
-}
-
-export const createMyCommunity = async (
-  communityData: CommunmityData
-): Promise<CommunityDBResponse> => {
+export const createCommunity = async (community: CommunityPostRequest): Promise<void> => {
   try {
-    console.log(communityData);
-
-    const { data } = await viajateCorporationApi.post<CommunityDBResponse>(
-      "/comunidad/comunidad",
-      communityData
-    );
-
-    return data;
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      throw new Error(
-        error.response?.data?.message || `API Error: ${error.response?.status}`
-      );
-    }
-
-    throw new Error(
-      error instanceof Error
-        ? error.message
-        : "Error desconocido al crear una comunidad"
-    );
+    await viajateCorporationApi.post("/comunidad/comunidad", {
+      nombre: community.name,
+      descripcion: community.description,
+      localidad_id: community.locationId,
+      tipo_comunidad_id: community.communityTypeId,
+      email: community.email,
+      telefono: community.phone,
+      cuit: community.cuit,
+      web_url: community.website,
+      calle: community.street,
+      altura: community.streetNumber,
+      numero_piso: community.floorNumber,
+      lat: community.latitude,
+      lng: community.longitude,
+    });
+  } catch (error) {
+    console.error("Error al crear comunidad:", error);
+    throw error;
   }
 };

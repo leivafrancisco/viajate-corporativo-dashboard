@@ -10,7 +10,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import ConfirmDialog from "@/presentation/alert/components/ConfirmDialog";
-import { useCommunity } from "@/presentation/community/hook/useCommunity";
+import { useCommunity } from "@/presentation/community/hooks/useCommunity";
 import { Community } from "@/core/community/interface/community.interface";
 
 export default function ShowCommunityView() {
