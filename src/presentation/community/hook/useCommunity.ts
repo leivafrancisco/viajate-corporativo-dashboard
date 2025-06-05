@@ -1,4 +1,4 @@
-import { createMyCommunity } from "@/core/community/actions/create-community.action";
+import { createCommunity } from "@/core/community/actions/create-community.action";
 import { getCommunities } from "@/core/community/actions/show-community.action";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -11,8 +11,8 @@ export const useCommunity = () => {
     staleTime: 1000 * 60 * 10,
   });
 
-  const createCommunity = useMutation({
-    mutationFn: createMyCommunity,
+  const createCommunityMutation = useMutation({
+    mutationFn: createCommunity,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["community"],
@@ -25,6 +25,6 @@ export const useCommunity = () => {
 
   return {
     communitiesQuery,
-    createCommunity,
+    createCommunity: createCommunityMutation,
   };
 };

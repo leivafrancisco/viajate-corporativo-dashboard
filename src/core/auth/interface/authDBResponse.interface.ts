@@ -5,7 +5,6 @@ export interface AuthDBResponse {
 }
 
 interface Data {
-    usuario:       Usuario;
     token:         string;
     refresh_token: string;
 }

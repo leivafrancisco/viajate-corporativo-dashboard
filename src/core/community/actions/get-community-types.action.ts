@@ -1,14 +1,11 @@
 import axios from "axios";
 import { viajateCorporationApi } from "@/core/api/viajateCorporationApi";
-import { CreateCommunityRequest, CreateCommunityResponse } from "../interface/community.interface";
+import { TipoComunidadResponse } from "../interface/community.interface";
 
-export const createCommunity = async (
-  communityData: CreateCommunityRequest
-): Promise<CreateCommunityResponse> => {
+export const getCommunityTypes = async (): Promise<TipoComunidadResponse> => {
   try {
-    const { data } = await viajateCorporationApi.post<CreateCommunityResponse>(
-      "/comunidad/comunidad",
-      communityData
+    const { data } = await viajateCorporationApi.get<TipoComunidadResponse>(
+      "/comunidad/tipo-comunidad"
     );
 
     return data;
@@ -22,7 +19,7 @@ export const createCommunity = async (
     throw new Error(
       error instanceof Error
         ? error.message
-        : "Error desconocido al crear la comunidad"
+        : "Error desconocido al cargar tipos de comunidad"
     );
   }
-};
+}; 

@@ -1,8 +1,13 @@
 import { MappedUser } from "../interface/auth.interface";
 import { AuthDBResponse } from "../interface/AuthDBResponse.interface";
+import { jwtDecode } from "jwt-decode";
 
 export const mapUserResponse = (response: AuthDBResponse): MappedUser => {
-  const { usuario, token, refresh_token } = response.data;
+  const { token, refresh_token } = response.data;
+  
+  // Decodificar el token JWT para obtener la información del usuario
+  const decodedToken: any = jwtDecode(token);
+  const usuario = decodedToken.user;
 
   return {
     usuario: {
@@ -19,6 +24,7 @@ export const mapUserResponse = (response: AuthDBResponse): MappedUser => {
       activo: usuario.activo,
       total_conductor: usuario.total_conductor,
       total_pasajero: usuario.total_pasajero,
+      comunidades: usuario.comunidades
     },
     token,
     refreshToken: refresh_token,
