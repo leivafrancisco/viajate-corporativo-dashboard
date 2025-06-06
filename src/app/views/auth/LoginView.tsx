@@ -1,5 +1,10 @@
-import { Button, TextField, Paper } from "@mui/material";
+import { useState } from "react"; 
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom"; 
+import { toast } from "sonner"; 
+
+import { Button, TextField, Paper, CircularProgress } from "@mui/material";
+import { useAuthStore } from "@/presentation/auth/store/useAuthStore"; 
 
 type LoginFormInputs = {
   email: string;
@@ -13,9 +18,26 @@ export default function LoginView() {
     formState: { errors },
   } = useForm<LoginFormInputs>();
 
-  const onSubmit = (data: LoginFormInputs) => {
-    console.log("Datos enviados:", data);
-    // Aquí harías el login real (API call, etc.)
+  const { login } = useAuthStore(); 
+  const navigate = useNavigate(); 
+  const [isLoading, setIsLoading] = useState(false); 
+
+  const onSubmit = async (data: LoginFormInputs) => {
+    setIsLoading(true); 
+
+    try {
+      const success = await login(data.email, data.password);
+
+      if (success) {
+        toast.success("Inicio de sesión exitoso");
+        navigate("/");
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Error desconocido al iniciar sesión";
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false); 
+    }
   };
 
   return (
@@ -30,7 +52,6 @@ export default function LoginView() {
         gap: 3,
       }}
     >
-
       <form
         onSubmit={handleSubmit(onSubmit)}
         style={{ display: "flex", flexDirection: "column", gap: 16 }}
@@ -55,8 +76,15 @@ export default function LoginView() {
           fullWidth
         />
 
-        <Button type="submit" variant="contained" color="primary" fullWidth>
-          Iniciar sesión
+        <Button 
+          type="submit" 
+          variant="contained" 
+          color="primary" 
+          fullWidth 
+          disabled={isLoading} 
+          startIcon={isLoading ? <CircularProgress size={20} /> : null} 
+        >
+          {isLoading ? "Cargando..." : "Iniciar sesión"}
         </Button>
       </form>
     </Paper>

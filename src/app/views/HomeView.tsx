@@ -1,130 +1,204 @@
-import { Box, Typography, Card, CardContent } from "@mui/material";
-import Grid from "@mui/material/Grid";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  Alert,
+  CircularProgress,
+} from "@mui/material";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { useAuthStore } from "@/presentation/auth/store/useAuthStore";
+import { useCommunity } from "@/presentation/community/hook/useCommunity";
+import { useNavigate } from 'react-router-dom';
 
-const dataViajes = [
-  { mes: "Ene", viajes: 20 },
-  { mes: "Feb", viajes: 35 },
-  { mes: "Mar", viajes: 50 },
-  { mes: "Abr", viajes: 40 },
-  { mes: "May", viajes: 70 },
-  { mes: "Jun", viajes: 60 },
+const sampleData = [
+  { mes: 'Ene', valor: 0 },
+  { mes: 'Feb', valor: 10 },
+  { mes: 'Mar', valor: 20 },
+  { mes: 'Abr', valor: 15 },
+  { mes: 'May', valor: 30 },
+  { mes: 'Jun', valor: 25 },
+  { mes: 'Jul', valor: 40 },
+  { mes: 'Ago', valor: 35 },
+  { mes: 'Sep', valor: 50 },
+  { mes: 'Oct', valor: 45 },
+  { mes: 'Nov', valor: 60 },
+  { mes: 'Dic', valor: 55 },
 ];
-
-const dataVehiculos = [
-  { tipo: "Auto", cantidad: 65 },
-  { tipo: "Moto", cantidad: 25 },
-  { tipo: "Camioneta", cantidad: 12 },
-];
-
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
 
 export default function DashboardInicioComunidad() {
+  const { user } = useAuthStore();
+  const { communitiesQuery } = useCommunity();
+  const navigate = useNavigate();
+
+  if (!user) {
+    return (
+      <Box sx={{ p: 4 }}>
+        <Alert severity="error">
+          No existe el usuario o no has iniciado sesión correctamente.
+        </Alert>
+      </Box>
+    );
+  }
+
+  if (communitiesQuery.isLoading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 2,
+          minHeight: "60vh",
+          p: 4,
+        }}
+      >
+        <CircularProgress />
+        <Typography variant="h6">Cargando comunidades...</Typography>
+      </Box>
+    );
+  }
+
+  if (communitiesQuery.isError) {
+    return (
+      <Box
+        sx={{
+          minHeight: "60vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          p: 4,
+        }}
+      >
+        <Alert severity="error" sx={{ maxWidth: 600 }}>
+          <Typography variant="h6" gutterBottom>
+            Error al cargar las comunidades
+          </Typography>
+          <Typography>
+            {communitiesQuery.error instanceof Error
+              ? communitiesQuery.error.message
+              : "Error desconocido al cargar las comunidades"}
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            Por favor, intenta recargar la página o contacta con soporte si el problema persiste.
+          </Typography>
+        </Alert>
+      </Box>
+    );
+  }
+
+  const communities = communitiesQuery.data || [];
+
   return (
-    <Box sx={{ p: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        Bienvenido, Administrador de Comunidad UNNE 🚀
+    <Box sx={{ p: 4, minHeight: '100vh', background: '#f8f9fa' }}>
+      <Typography variant="h4" fontWeight={700} mb={4} sx={{ color: '#222' }}>
+        Bienvenido, {user.nombre}
       </Typography>
-
-      <Grid container spacing={3} mt={2}>
-        {/* Tarjetas de métricas */}
-        <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent>
-              <Typography variant="subtitle1" color="textSecondary" gutterBottom>
-                Usuarios registrados
-              </Typography>
-              <Typography variant="h5">328</Typography>
-            </CardContent>
+      {/* Estadísticas y gráfico */}
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, mt: 2, alignItems: 'stretch' }}>
+        {/* Estadísticas */}
+        <Box sx={{ flex: '1 1 180px', minWidth: 180 }}>
+          <Card sx={{ borderRadius: 2, boxShadow: 2, p: 2, minHeight: 110, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <Typography variant="subtitle2" color="text.secondary" fontWeight={600} mb={0.5}>
+              Usuarios registrados
+            </Typography>
+            <Typography variant="h4" fontWeight={700} color="primary.main">
+              {user.total_pasajero + user.total_conductor}
+            </Typography>
           </Card>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent>
-              <Typography variant="subtitle1" color="textSecondary" gutterBottom>
-                Vehículos registrados
-              </Typography>
-              <Typography variant="h5">102</Typography>
-            </CardContent>
+        </Box>
+        <Box sx={{ flex: '1 1 180px', minWidth: 180 }}>
+          <Card sx={{ borderRadius: 2, boxShadow: 2, p: 2, minHeight: 110, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <Typography variant="subtitle2" color="text.secondary" fontWeight={600} mb={0.5}>
+              Vehículos registrados
+            </Typography>
+            <Typography variant="h4" fontWeight={700} color="primary.main">
+              {user.total_conductor}
+            </Typography>
           </Card>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent>
-              <Typography variant="subtitle1" color="textSecondary" gutterBottom>
-                Viajes creados
-              </Typography>
-              <Typography variant="h5">212</Typography>
-            </CardContent>
+        </Box>
+        <Box sx={{ flex: '1 1 180px', minWidth: 180 }}>
+          <Card sx={{ borderRadius: 2, boxShadow: 2, p: 2, minHeight: 110, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <Typography variant="subtitle2" color="text.secondary" fontWeight={600} mb={0.5}>
+              Viajes creados
+            </Typography>
+            <Typography variant="h4" fontWeight={700} color="primary.main">
+              {user.total_pasajero}
+            </Typography>
           </Card>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent>
-              <Typography variant="subtitle1" color="textSecondary" gutterBottom>
-                Distancia total recorrida
-              </Typography>
-              <Typography variant="h5">14.350 km</Typography>
-            </CardContent>
+        </Box>
+        <Box sx={{ flex: '1 1 220px', minWidth: 220 }}>
+          <Card sx={{ borderRadius: 2, boxShadow: 2, p: 2, minHeight: 110, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <Typography variant="subtitle2" color="text.secondary" fontWeight={600} mb={0.5}>
+              Distancia total recorrida
+            </Typography>
+            <Typography variant="h4" fontWeight={700} color="primary.main">
+              {Math.floor((user.total_pasajero + user.total_conductor) * 15)} km
+            </Typography>
           </Card>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent>
-              <Typography variant="subtitle1" color="textSecondary" gutterBottom>
-                CO₂ evitado
-              </Typography>
-              <Typography variant="h5">2.430 kg</Typography>
-            </CardContent>
+        </Box>
+        {/* Gráfico */}
+        <Box sx={{ flex: '2 1 400px', minWidth: 320, maxWidth: 600 }}>
+          <Card sx={{ borderRadius: 2, boxShadow: 2, p: 2, minHeight: 110, height: '100%' }}>
+            <Typography variant="subtitle2" color="text.secondary" fontWeight={600} mb={1}>
+              Ejemplo de Gráfico de Actividad
+            </Typography>
+            <ResponsiveContainer width="100%" height={120}>
+              <LineChart data={sampleData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                <XAxis dataKey="mes" tick={{ fontSize: 12 }} />
+                <YAxis tick={{ fontSize: 12 }} />
+                <Tooltip />
+                <Line type="monotone" dataKey="valor" stroke="#2d6cdf" strokeWidth={3} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
           </Card>
-        </Grid>
-      </Grid>
-
-      {/* Gráfico de viajes creados por mes */}
-      <Box mt={5}>
-        <Typography variant="h5" gutterBottom>
-          Viajes creados por mes
-        </Typography>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={dataViajes} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="mes" />
-            <YAxis />
-            <Tooltip />
-            <Line type="monotone" dataKey="viajes" stroke="#1976d2" strokeWidth={3} />
-          </LineChart>
-        </ResponsiveContainer>
+        </Box>
       </Box>
-
-      {/* Gráfico de tipos de vehículos */}
-      <Box mt={5}>
-        <Typography variant="h5" gutterBottom>
-          Tipos de vehículos registrados
-        </Typography>
-        <ResponsiveContainer width="100%" height={300}>
-          <PieChart>
-            <Pie
-              data={dataVehiculos}
-              dataKey="cantidad"
-              nameKey="tipo"
-              cx="50%"
-              cy="50%"
-              outerRadius={100}
-              label
+      <Typography variant="h4" fontWeight={700} gutterBottom sx={{ mt: 4, color: '#222' }}>
+        Comunidades Registradas
+      </Typography>
+      {communities.length === 0 ? (
+        <Alert severity="info" sx={{ mt: 2 }}>
+          No hay comunidades registradas.
+        </Alert>
+      ) : (
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, mt: 2 }}>
+          {communities.map((community) => (
+            <Box
+              key={community.id}
+              sx={{
+                flex: '1 1 260px',
+                minWidth: 220,
+                maxWidth: 320,
+                background: '#fff',
+                borderRadius: 2,
+                boxShadow: 2,
+                p: 3,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                mb: 2,
+                cursor: 'pointer',
+                transition: 'box-shadow 0.2s',
+                '&:hover': {
+                  boxShadow: 6,
+                  background: '#f5f6fa',
+                },
+              }}
+              onClick={() => navigate(`/comunidad/estadisticas/${community.id}`)}
             >
-              {dataVehiculos.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
-      </Box>
+              <Typography variant="h6" fontWeight={700} sx={{ mb: 0.5, color: '#2d6cdf' }}>
+                {community.nombre}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1, fontWeight: 500 }}>
+                {community.descripcion}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+      )}
     </Box>
   );
 }

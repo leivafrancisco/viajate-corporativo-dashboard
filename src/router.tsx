@@ -7,6 +7,7 @@ import LoginView from "@/app/views/auth/LoginView";
 import ShowCommunityView from "@/app/views/community/ShowCommunityView";
 import CreateCommunityView from "@/app/views/community/CreateCommunityView";
 import EditCommunityView from "@/app/views/community/EditCommunityView";
+import CommunityStatsView from "@/app/views/community/CommunityStatsView";
 
 export default function Router() {
   return (
@@ -18,6 +19,8 @@ export default function Router() {
           <Route path="/comunidad/crear" element={<CreateCommunityView />} />
           <Route path="/comunidad/mostrar" element={<ShowCommunityView />} />
           <Route path="/comunidad/editar/:id" element={<EditCommunityView />} />
+          <Route path="/comunidad/miembros/:id" element={<EditCommunityView />} />
+          <Route path="/comunidad/estadisticas/:id" element={<CommunityStatsView />} />
         </Route>
 
         {/* Rutas dentro del AuthLayout */}
