@@ -19,6 +19,7 @@ export interface Usuario {
   total_conductor: number;
   total_pasajero: number;
   comunidades: Comunidad[];
+  rol: string;
 }
 
 export interface MappedUser {

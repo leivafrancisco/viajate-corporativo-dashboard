@@ -24,7 +24,8 @@ export const mapUserResponse = (response: AuthDBResponse): MappedUser => {
       activo: usuario.activo,
       total_conductor: usuario.total_conductor,
       total_pasajero: usuario.total_pasajero,
-      comunidades: usuario.comunidades
+      comunidades: usuario.comunidades,
+      rol: decodedToken.rol,
     },
     token,
     refreshToken: refresh_token,

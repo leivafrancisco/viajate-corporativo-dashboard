@@ -13,8 +13,11 @@ export const getCommunities = async (): Promise<Community[]> => {
     return mapCommunity(data);
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
+      if (error.response?.status === 403) {
+        throw new Error("No tienes permisos para ver las comunidades. Por favor, verifica tu rol y permisos.");
+      }
       throw new Error(
-        error.response?.data?.message || `API Error: ${error.response?.status}`
+        error.response?.data?.message || `Error al cargar comunidades: ${error.response?.status}`
       );
     }
 

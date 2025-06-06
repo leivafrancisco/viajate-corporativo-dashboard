@@ -20,40 +20,6 @@ import { useAuthStore } from "@/presentation/auth/store/useAuthStore";
 import { toast } from "sonner";
 import { CircularProgress, Box } from "@mui/material"; // 👉 Loading
 
-const NAVIGATION: Navigation = [
-  {
-    kind: "header",
-    title: "General",
-  },
-  {
-    segment: "",
-    title: "Inicio",
-    icon: <HomeIcon />,
-  },
-  {
-    kind: "header",
-    title: "Comunidad",
-  },
-  {
-    segment: "comunidad",
-    title: "Comunidad",
-    icon: <GroupsIcon />,
-    children: [
-      { segment: "mostrar", title: "Mostrar" },
-      { segment: "crear", title: "Crear" },
-    ],
-  },
-  {
-    segment: "miembros",
-    title: "Miembros",
-    children: [
-      { segment: "unne", title: "UNNE" },
-      { segment: "Devlight", title: "Devlight" },
-      { segment: "comunidad-3", title: "Comunidad Viajate" },
-    ],
-  },
-];
-
 function useCustomRouter(): Router {
   const navigate = useNavigate();
   const location = useLocation();
@@ -79,6 +45,56 @@ export default function AppLayout() {
   React.useEffect(() => {
     checkStatus();
   }, [checkStatus]);
+
+  console.log('Usuario logueado:', user);
+  console.log('Rol del usuario:', user?.rol);
+
+  const isSuperAdmin = user?.rol === "SUPERADMIN";
+  const isAdmin = user?.rol === "ADMINISTRADOR";
+
+  // Menú dinámico según el rol
+  const NAVIGATION: Navigation = [
+    {
+      kind: "header",
+      title: "General",
+    },
+    {
+      segment: "",
+      title: "Inicio",
+      icon: <HomeIcon />,
+    },
+    {
+      kind: "header",
+      title: isSuperAdmin ? "Comunidades" : "Comunidad",
+    },
+    isSuperAdmin
+      ? {
+          segment: "comunidad",
+          title: "Comunidades",
+          icon: <GroupsIcon />,
+          children: [
+            { segment: "mostrar", title: "Mostrar" },
+            { segment: "crear", title: "Crear" },
+          ],
+        }
+      : {
+          segment: "comunidad",
+          title: "Comunidad",
+          icon: <GroupsIcon />,
+          children: [
+            { segment: "mostrar", title: "Mostrar" },
+          ],
+        },
+    {
+      segment: "miembros",
+      title: "Miembros",
+      children: [
+        { segment: "unne", title: "UNNE" },
+        { segment: "Devlight", title: "Devlight" },
+        { segment: "comunidad-3", title: "Comunidad Viajate" },
+      ],
+    },
+  ];
 
   // ✅ Definí primero todo antes de hacer returns
   const authentication = React.useMemo(
