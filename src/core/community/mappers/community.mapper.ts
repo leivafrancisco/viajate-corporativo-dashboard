@@ -1,11 +1,15 @@
 import { Community } from "../interface/community.interface";
 import { CommunityDBResponse } from "../interface/communityDBResponse.interface";
 
-// Mapper
+// Mapper seguro
 export const mapCommunity = (
   response: CommunityDBResponse
 ): Community[] => {
-  return response.data.comunidades.map((community) => ({
+  const comunidades = response?.data?.comunidades;
+  if (!Array.isArray(comunidades)) {
+    return [];
+  }
+  return comunidades.map((community) => ({
     id: community.id,
     nombre: community.nombre,
     descripcion: community.descripcion,

@@ -8,11 +8,18 @@ export const getCommunityTypes = async (): Promise<TipoComunidadResponse> => {
       "/comunidad/tipo-comunidad"
     );
 
+    if (!data.data?.TipoComunidades) {
+      throw new Error("No se encontraron tipos de comunidad");
+    }
+
     return data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
+      if (error.response?.status === 403) {
+        throw new Error("No tienes permisos para ver los tipos de comunidad");
+      }
       throw new Error(
-        error.response?.data?.message || `API Error: ${error.response?.status}`
+        error.response?.data?.message || `Error al cargar tipos de comunidad: ${error.response?.status}`
       );
     }
 

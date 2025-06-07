@@ -122,6 +122,14 @@ export default function ShowCommunityView() {
     );
   }
 
+  if (comunidades.length === 0) {
+    return (
+      <Typography sx={{ mt: 8, textAlign: 'center', color: '#888' }}>
+        No hay comunidades registradas.
+      </Typography>
+    );
+  }
+
   return (
     <Box sx={{ p: 4, minHeight: '100vh', background: '#f8f9fa' }}>
       <Typography variant="h4" fontWeight={700} mb={4} sx={{ color: '#222' }}>

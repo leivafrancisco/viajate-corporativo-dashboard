@@ -42,6 +42,9 @@ export interface CreateCommunityRequest {
   web_url: string;
   street_address: string;
   numero_piso?: number;
+  usuarios_id: number;
+  lat: number;
+  lng: number;
 }
 
 export interface CreateCommunityResponse {

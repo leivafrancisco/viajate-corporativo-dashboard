@@ -74,7 +74,7 @@ export default function AppLayout() {
           icon: <GroupsIcon />,
           children: [
             { segment: "mostrar", title: "Mostrar" },
-            { segment: "crear", title: "Crear" },
+            { segment: "crear", title: "Crear comunidad" },
           ],
         }
       : {
