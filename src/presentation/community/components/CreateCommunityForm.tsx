@@ -57,6 +57,7 @@ export const CreateCommunityForm = () => {
     defaultValues: {
       localidad_id: 12,
       tipo_comunidad_id: undefined,
+      numero_piso: 0,
     },
   });
 
@@ -231,9 +232,16 @@ export const CreateCommunityForm = () => {
             fullWidth
           />
           <TextField
-            label="Número de piso (opcional)"
+            label="Número de piso"
             type="number"
-            {...register("numero_piso")}
+            defaultValue={0}
+            {...register("numero_piso", {
+              valueAsNumber: true,
+              setValueAs: (value) => {
+                if (value === "" || value === null || value === undefined) return 0;
+                return Number(value);
+              }
+            })}
             error={!!errors.numero_piso}
             helperText={errors.numero_piso?.message}
             fullWidth
